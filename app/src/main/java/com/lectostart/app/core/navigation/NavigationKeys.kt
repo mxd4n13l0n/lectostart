@@ -34,7 +34,7 @@ import kotlinx.serialization.Serializable
 /** El ViewModel de Questions obtiene readingId a partir de la sesión (SessionRepository.getSession), no hace falta threadearlo aparte. */
 @Serializable data class Questions(val sessionId: String) : NavKey
 
-@Serializable data object SessionResult : NavKey
+@Serializable data class SessionResult(val sessionId: String) : NavKey
 
 @Serializable data object Progress : NavKey
 
