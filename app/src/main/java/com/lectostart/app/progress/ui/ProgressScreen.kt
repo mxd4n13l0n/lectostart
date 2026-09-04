@@ -1,5 +1,6 @@
 package com.lectostart.app.progress.ui
 
+import android.content.Intent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,9 +12,12 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -28,6 +32,19 @@ private val DATE_FORMATTER = DateTimeFormatter.ofPattern("d MMM, HH:mm")
 @Composable
 fun ProgressScreen(onStartNewReading: () -> Unit, modifier: Modifier = Modifier, viewModel: ProgressViewModel = hiltViewModel()) {
   val state by viewModel.uiState.collectAsStateWithLifecycle()
+  val context = LocalContext.current
+
+  LaunchedEffect(viewModel) {
+    viewModel.exportEvent.collect { uri ->
+      val shareIntent =
+        Intent(Intent.ACTION_SEND).apply {
+          type = "application/json"
+          putExtra(Intent.EXTRA_STREAM, uri)
+          addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        }
+      context.startActivity(Intent.createChooser(shareIntent, "Exportar datos de LectoStart"))
+    }
+  }
 
   if (state.isLoading) return
 
@@ -59,6 +76,9 @@ fun ProgressScreen(onStartNewReading: () -> Unit, modifier: Modifier = Modifier,
         }
       }
     }
+
+    // Herramienta de investigador (T-025), no una historia de usuario del participante.
+    TextButton(onClick = viewModel::onExportRequested) { Text("Exportar datos (investigador)") }
   }
 }
 

@@ -104,6 +104,10 @@ Con esto la app cubre el alcance completo del MVP definido en `MVP.md` §3 (Fase
 
 **T-024 completado (2026-09-04) — inicio de Fase 3.** `DataExporter` (`core/data/export`) exporta usuario, diagnósticos, sesiones y respuestas a un único JSON, compartible vía `FileProvider` (nuevo `<provider>` en el manifest + `res/xml/file_paths.xml`, apuntando a `cacheDir/exports/`). La construcción del JSON es una función pura (`buildExportJson`, sin Context) separada de la escritura del archivo — 2 tests unitarios prueban el JSON directamente, y 1 test instrumentado prueba el flujo real completo (Context, archivo, `content://` URI, lectura de vuelta vía `ContentResolver`). 16/16 tests instrumentados pasan. Aún no hay UI para disparar la exportación — eso es T-025.
 
+**T-025 completado (2026-09-04).** Botón "Exportar datos (investigador)" al final de `ProgressScreen`, claramente separado como herramienta de investigación (no historia de usuario del participante). `ProgressViewModel.onExportRequested()` llama a `DataExporter` y emite el `Uri` resultante por un `SharedFlow` de un solo disparo, que la pantalla colecta para lanzar `Intent.ACTION_SEND` (share sheet nativo de Android). Verificado en el emulador: el botón dispara el selector de Android ("Sharing 1 file") con `lectostart_export_*.json` listo para compartir a Drive/Gmail/etc.
+
+Con T-024 y T-025 completos, la Fase 3 del MVP queda cerrada (T-026/T-027 son post-piloto/opcionales, sin trabajo pendiente por ahora). **El MVP completo de LectoStart, tal como lo define `MVP.md`, está funcionalmente terminado end-to-end.**
+
 ### T-007 — Entidades y DAOs Room
 Implementar las entidades de `ARCHITECTURE.md` §5 (`UserEntity`, `ConsentEntity`, `DiagnosticEntity`, `ReadingEntity`, `QuestionEntity`, `SessionEntity`, `AnswerEntity`) con sus DAOs (`@Insert`, queries con `Flow`), registradas en `LectoStartDatabase`.
 
