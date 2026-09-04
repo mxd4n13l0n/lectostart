@@ -12,7 +12,8 @@ import kotlinx.serialization.Serializable
 
 @Serializable data object Consent : NavKey
 
-@Serializable data object CreateProfile : NavKey
+/** [userId] se genera al aceptar el consentimiento (US-02) y se reutiliza al crear el perfil (US-03). */
+@Serializable data class CreateProfile(val userId: String) : NavKey
 
 @Serializable data object Diagnostic : NavKey
 
