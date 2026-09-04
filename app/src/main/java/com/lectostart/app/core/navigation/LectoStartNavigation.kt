@@ -110,9 +110,10 @@ private fun LectoStartNavHost(initialKey: NavKey, modifier: Modifier) {
         }
         entry<RescueMode> { key ->
           RescueModeScreen(
-            onStartFiveMin = {
+            onStartFiveMin = { reason ->
               backStack.removeLastOrNull() // sale de RescueMode
-              backStack.add(StartFiveMin(key.readingId, durationMin = 5, viaRescueMode = true)) // Modo Rescate siempre fuerza 5 min (US-13)
+              // Modo Rescate siempre fuerza 5 min con el motivo elegido (US-13)
+              backStack.add(StartFiveMin(key.readingId, durationMin = 5, viaRescueMode = true, rescueReason = reason))
             },
             modifier = contentModifier,
           )
