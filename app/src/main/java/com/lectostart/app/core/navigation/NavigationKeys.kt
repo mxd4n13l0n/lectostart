@@ -22,7 +22,8 @@ import kotlinx.serialization.Serializable
 
 @Serializable data object ReadingList : NavKey
 
-@Serializable data object DurationPicker : NavKey
+/** [readingId] elegido en US-05; viaja por navegación porque no hay un concepto de "lectura actual" persistido (a diferencia del usuario). */
+@Serializable data class DurationPicker(val readingId: String) : NavKey
 
 @Serializable data object StartFiveMin : NavKey
 

@@ -57,7 +57,7 @@ private fun LectoStartNavHost(initialKey: NavKey, modifier: Modifier) {
         entry<CreateProfile> { key -> CreateProfileScreen(userId = key.userId, onNext = { backStack.add(Diagnostic) }, modifier = contentModifier) }
         entry<Diagnostic> { DiagnosticScreen(onNext = { level -> backStack.add(DiagnosticResult(level)) }, modifier = contentModifier) }
         entry<DiagnosticResult> { key -> DiagnosticResultScreen(level = key.level, onNext = { backStack.add(ReadingList) }, modifier = contentModifier) }
-        entry<ReadingList> { ReadingListScreen(onNext = { backStack.add(DurationPicker) }, modifier = contentModifier) }
+        entry<ReadingList> { ReadingListScreen(onReadingSelected = { readingId -> backStack.add(DurationPicker(readingId)) }, modifier = contentModifier) }
         entry<DurationPicker> {
           DurationPickerScreen(
             onNext = { backStack.add(StartFiveMin) },

@@ -4,12 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.lectostart.app.core.ui.PlaceholderScreen
 
-/** Placeholders de Fase 0 (T-006). UI real: US-05 a US-08 en docs/USER_STORIES.md. */
-@Composable
-fun ReadingListScreen(onNext: () -> Unit, modifier: Modifier = Modifier) {
-  PlaceholderScreen(routeName = "Elegir lectura", onNext = onNext, modifier = modifier)
-}
-
+/** Placeholders de Fase 0 (T-006) pendientes. UI real: US-06 a US-08 en docs/USER_STORIES.md. ReadingList (US-05) ya es real: ver ReadingListScreen.kt. */
 @Composable
 fun DurationPickerScreen(onNext: () -> Unit, onRescueMode: () -> Unit, modifier: Modifier = Modifier) {
   PlaceholderScreen(
