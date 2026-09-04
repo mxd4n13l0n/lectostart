@@ -25,9 +25,11 @@ import kotlinx.serialization.Serializable
 /** [readingId] elegido en US-05; viaja por navegación porque no hay un concepto de "lectura actual" persistido (a diferencia del usuario). */
 @Serializable data class DurationPicker(val readingId: String) : NavKey
 
-@Serializable data class StartFiveMin(val readingId: String, val durationMin: Int) : NavKey
+/** [viaRescueMode]/[rescueReason] se rellenan cuando se llega desde Modo Rescate (US-13); por defecto false/null. */
+@Serializable data class StartFiveMin(val readingId: String, val durationMin: Int, val viaRescueMode: Boolean = false, val rescueReason: String? = null) :
+  NavKey
 
-@Serializable data object ReadingSession : NavKey
+@Serializable data class ReadingSession(val sessionId: String) : NavKey
 
 @Serializable data object Questions : NavKey
 

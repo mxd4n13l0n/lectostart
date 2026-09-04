@@ -88,6 +88,8 @@ Crear `LectoStartDatabase` (vacía de entidades por ahora, o con un placeholder)
 
 **T-015 completado (2026-09-03).** `DurationPickerScreen` (US-06) real: 4 `FilterChip` (5/10/15/20 min), sin ViewModel (selección de UI pura, sin persistencia propia). "Continuar" deshabilitado hasta elegir una opción. `StartFiveMin` pasó a `data class(readingId, durationMin)` y `RescueMode` a `data class(readingId)` en `NavigationKeys.kt`, para que el desvío de Modo Rescate (US-13) pueda forzar 5 min con la misma lectura al llegar a `StartFiveMin`. Verificado en el emulador: los 4 chips se ven, seleccionar una duración navega a "Solo 5 minutos", y el desvío `DurationPicker → Modo Rescate → StartFiveMin` funciona correctamente.
 
+**T-016 completado (2026-09-04).** `StartFiveMinScreen` (US-07) real: mensaje de bajo compromiso + "EMPEZAR 5 MINUTOS", crea la `SesionLectura` (vía `SessionRepository.startSession`) al tocar el botón y navega a Lectura con el `sessionId` generado. `ReadingSession` pasó a `data class(sessionId)`. `StartFiveMin` ahora también lleva `viaRescueMode`/`rescueReason` (default false/null) para que Modo Rescate (US-13, T-023 aún pendiente) pueda registrarlos sin tocar esta pantalla de nuevo. 2 tests unitarios nuevos. Verificado en el emulador: `SessionEntity` persistida con `readingId`, `chosenDurationMin`, `viaRescueMode=0`, timestamps correctos.
+
 ### T-007 — Entidades y DAOs Room
 Implementar las entidades de `ARCHITECTURE.md` §5 (`UserEntity`, `ConsentEntity`, `DiagnosticEntity`, `ReadingEntity`, `QuestionEntity`, `SessionEntity`, `AnswerEntity`) con sus DAOs (`@Insert`, queries con `Flow`), registradas en `LectoStartDatabase`.
 
