@@ -15,9 +15,10 @@ import kotlinx.serialization.Serializable
 /** [userId] se genera al aceptar el consentimiento (US-02) y se reutiliza al crear el perfil (US-03). */
 @Serializable data class CreateProfile(val userId: String) : NavKey
 
+/** El usuario ya existe en este punto (creado en US-03); el ViewModel lo obtiene de UserRepository, no hace falta threadearlo aquí. */
 @Serializable data object Diagnostic : NavKey
 
-@Serializable data object DiagnosticResult : NavKey
+@Serializable data class DiagnosticResult(val level: String) : NavKey
 
 @Serializable data object ReadingList : NavKey
 
