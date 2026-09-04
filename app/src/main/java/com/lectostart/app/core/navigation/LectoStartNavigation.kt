@@ -58,17 +58,17 @@ private fun LectoStartNavHost(initialKey: NavKey, modifier: Modifier) {
         entry<Diagnostic> { DiagnosticScreen(onNext = { level -> backStack.add(DiagnosticResult(level)) }, modifier = contentModifier) }
         entry<DiagnosticResult> { key -> DiagnosticResultScreen(level = key.level, onNext = { backStack.add(ReadingList) }, modifier = contentModifier) }
         entry<ReadingList> { ReadingListScreen(onReadingSelected = { readingId -> backStack.add(DurationPicker(readingId)) }, modifier = contentModifier) }
-        entry<DurationPicker> {
+        entry<DurationPicker> { key ->
           DurationPickerScreen(
-            onNext = { backStack.add(StartFiveMin) },
-            onRescueMode = { backStack.add(RescueMode) },
+            onNext = { durationMin -> backStack.add(StartFiveMin(key.readingId, durationMin)) },
+            onRescueMode = { backStack.add(RescueMode(key.readingId)) },
             modifier = contentModifier,
           )
         }
-        entry<StartFiveMin> {
+        entry<StartFiveMin> { key ->
           StartFiveMinScreen(
             onNext = { backStack.add(ReadingSession) },
-            onRescueMode = { backStack.add(RescueMode) },
+            onRescueMode = { backStack.add(RescueMode(key.readingId)) },
             modifier = contentModifier,
           )
         }
@@ -84,11 +84,11 @@ private fun LectoStartNavHost(initialKey: NavKey, modifier: Modifier) {
             modifier = contentModifier,
           )
         }
-        entry<RescueMode> {
+        entry<RescueMode> { key ->
           RescueModeScreen(
             onStartFiveMin = {
               backStack.removeLastOrNull() // sale de RescueMode
-              backStack.add(StartFiveMin)
+              backStack.add(StartFiveMin(key.readingId, durationMin = 5)) // Modo Rescate siempre fuerza 5 min (US-13)
             },
             modifier = contentModifier,
           )

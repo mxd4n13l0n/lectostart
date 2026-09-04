@@ -4,18 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.lectostart.app.core.ui.PlaceholderScreen
 
-/** Placeholders de Fase 0 (T-006) pendientes. UI real: US-06 a US-08 en docs/USER_STORIES.md. ReadingList (US-05) ya es real: ver ReadingListScreen.kt. */
-@Composable
-fun DurationPickerScreen(onNext: () -> Unit, onRescueMode: () -> Unit, modifier: Modifier = Modifier) {
-  PlaceholderScreen(
-    routeName = "¿Cuánto tiempo tienes?",
-    onNext = onNext,
-    onSecondary = onRescueMode,
-    secondaryLabel = "Modo Rescate",
-    modifier = modifier,
-  )
-}
-
+/** Placeholders de Fase 0 (T-006) pendientes. UI real: US-07/US-08 en docs/USER_STORIES.md. ReadingList (US-05) y DurationPicker (US-06) ya son reales: ver ReadingListScreen.kt / DurationPickerScreen.kt. */
 @Composable
 fun StartFiveMinScreen(onNext: () -> Unit, onRescueMode: () -> Unit, modifier: Modifier = Modifier) {
   PlaceholderScreen(

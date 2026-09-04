@@ -86,6 +86,8 @@ Crear `LectoStartDatabase` (vacía de entidades por ahora, o con un placeholder)
 
 **T-014 completado (2026-09-03).** `ReadingListScreen` (US-05) real: lista de las lecturas sembradas (T-009), cada una en un `Card` clickeable mostrando título y fuente. Al seleccionar, navega a `DurationPicker(readingId)` — `DurationPicker` pasó de `data object` a `data class(readingId)` en `NavigationKeys.kt`, porque a diferencia del usuario no existe un concepto de "lectura actual" persistido; tiene que viajar por navegación. Sin tests unitarios nuevos (el ViewModel es un `stateIn` trivial, ya cubierto por los tests de `ReadingRepository` en T-008). Verificado en el emulador: ambas lecturas se ven con título y fuente, seleccionar una navega correctamente a "¿Cuánto tiempo tienes?".
 
+**T-015 completado (2026-09-03).** `DurationPickerScreen` (US-06) real: 4 `FilterChip` (5/10/15/20 min), sin ViewModel (selección de UI pura, sin persistencia propia). "Continuar" deshabilitado hasta elegir una opción. `StartFiveMin` pasó a `data class(readingId, durationMin)` y `RescueMode` a `data class(readingId)` en `NavigationKeys.kt`, para que el desvío de Modo Rescate (US-13) pueda forzar 5 min con la misma lectura al llegar a `StartFiveMin`. Verificado en el emulador: los 4 chips se ven, seleccionar una duración navega a "Solo 5 minutos", y el desvío `DurationPicker → Modo Rescate → StartFiveMin` funciona correctamente.
+
 ### T-007 — Entidades y DAOs Room
 Implementar las entidades de `ARCHITECTURE.md` §5 (`UserEntity`, `ConsentEntity`, `DiagnosticEntity`, `ReadingEntity`, `QuestionEntity`, `SessionEntity`, `AnswerEntity`) con sus DAOs (`@Insert`, queries con `Flow`), registradas en `LectoStartDatabase`.
 

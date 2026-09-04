@@ -25,7 +25,7 @@ import kotlinx.serialization.Serializable
 /** [readingId] elegido en US-05; viaja por navegación porque no hay un concepto de "lectura actual" persistido (a diferencia del usuario). */
 @Serializable data class DurationPicker(val readingId: String) : NavKey
 
-@Serializable data object StartFiveMin : NavKey
+@Serializable data class StartFiveMin(val readingId: String, val durationMin: Int) : NavKey
 
 @Serializable data object ReadingSession : NavKey
 
@@ -35,4 +35,5 @@ import kotlinx.serialization.Serializable
 
 @Serializable data object Progress : NavKey
 
-@Serializable data object RescueMode : NavKey
+/** [readingId] viaja para poder seguir hacia StartFiveMin con la misma lectura y duración forzada a 5 min (US-13). */
+@Serializable data class RescueMode(val readingId: String) : NavKey
