@@ -1,10 +1,17 @@
 package com.lectostart.app.core.navigation
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
@@ -23,13 +30,21 @@ import com.lectostart.app.reading.ui.StartFiveMinScreen
 import com.lectostart.app.rescue.ui.RescueModeScreen
 
 /**
- * NavHost central (docs/ARCHITECTURE.md §4). Fase 0: conecta el flujo principal completo con
- * pantallas placeholder. La lógica de "saltar onboarding si ya hay perfil" se agrega en T-010
- * cuando exista UserRepository.
+ * NavHost central (docs/ARCHITECTURE.md §4). La ruta inicial depende de si ya existe un perfil
+ * local: si sí, se salta todo el onboarding y se abre directo en "Mi progreso" (US-01).
  */
 @Composable
-fun LectoStartNavigation(modifier: Modifier = Modifier) {
-  val backStack = rememberNavBackStack(Welcome)
+fun LectoStartNavigation(modifier: Modifier = Modifier, viewModel: AppStartViewModel = hiltViewModel()) {
+  when (viewModel.startDestination.collectAsStateWithLifecycle().value) {
+    AppStartDestination.Loading -> Box(modifier.fillMaxSize(), contentAlignment = Alignment.Center) { CircularProgressIndicator() }
+    AppStartDestination.Onboarding -> LectoStartNavHost(initialKey = Welcome, modifier = modifier)
+    AppStartDestination.Home -> LectoStartNavHost(initialKey = Progress, modifier = modifier)
+  }
+}
+
+@Composable
+private fun LectoStartNavHost(initialKey: NavKey, modifier: Modifier) {
+  val backStack = rememberNavBackStack(initialKey)
   val contentModifier = modifier.safeDrawingPadding().padding(16.dp)
 
   NavDisplay(
