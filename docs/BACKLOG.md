@@ -70,6 +70,8 @@ Crear `LectoStartDatabase` (vacía de entidades por ahora, o con un placeholder)
 
 ## Fase 1 — Flujo principal end-to-end
 
+**T-007 completado (2026-09-03).** Las 7 entidades de `ARCHITECTURE.md` §5 y sus DAOs están implementados, cada uno en el paquete de su feature (`onboarding/data`, `procrastination/data`, `reading/data`, `comprehension/data`), registrados en `LectoStartDatabase` y expuestos vía Hilt (`DatabaseModule`). Verificado con 7 tests instrumentados (Room in-memory, `androidTest`) corridos en el emulador — los 7 pasan (`./gradlew connectedDebugAndroidTest`).
+
 ### T-007 — Entidades y DAOs Room
 Implementar las entidades de `ARCHITECTURE.md` §5 (`UserEntity`, `ConsentEntity`, `DiagnosticEntity`, `ReadingEntity`, `QuestionEntity`, `SessionEntity`, `AnswerEntity`) con sus DAOs (`@Insert`, queries con `Flow`), registradas en `LectoStartDatabase`.
 
