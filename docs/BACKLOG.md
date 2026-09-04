@@ -72,6 +72,8 @@ Crear `LectoStartDatabase` (vacía de entidades por ahora, o con un placeholder)
 
 **T-007 completado (2026-09-03).** Las 7 entidades de `ARCHITECTURE.md` §5 y sus DAOs están implementados, cada uno en el paquete de su feature (`onboarding/data`, `procrastination/data`, `reading/data`, `comprehension/data`), registrados en `LectoStartDatabase` y expuestos vía Hilt (`DatabaseModule`). Verificado con 7 tests instrumentados (Room in-memory, `androidTest`) corridos en el emulador — los 7 pasan (`./gradlew connectedDebugAndroidTest`).
 
+**T-008 completado (2026-09-03).** `UserRepository`, `DiagnosticRepository`, `ReadingRepository`, `SessionRepository`, `ComprehensionRepository` — interfaz + implementación Room, bindeadas vía `@Binds` en `core/di/RepositoryModule.kt`. Se montó infraestructura de testing con Hilt (`HiltTestRunner`, `TestDatabaseModule` con DB en memoria) que se reutilizará para los tests de ViewModels de Fase 1 (`ARCHITECTURE.md` §11). 13 tests instrumentados pasan en el emulador (7 de T-007 + 6 de `RepositoryInjectionTest`, que prueba inyección + round-trip real de cada repositorio). `DiagnosticEntity.answersJson` ahora sí es JSON real (`kotlinx-serialization-json`), no el placeholder de coma-separado que se había considerado.
+
 ### T-007 — Entidades y DAOs Room
 Implementar las entidades de `ARCHITECTURE.md` §5 (`UserEntity`, `ConsentEntity`, `DiagnosticEntity`, `ReadingEntity`, `QuestionEntity`, `SessionEntity`, `AnswerEntity`) con sus DAOs (`@Insert`, queries con `Flow`), registradas en `LectoStartDatabase`.
 

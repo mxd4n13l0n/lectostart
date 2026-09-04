@@ -15,6 +15,7 @@ android {
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
+        testInstrumentationRunner = "com.lectostart.app.HiltTestRunner"
     }
 
     buildTypes {
@@ -94,6 +95,11 @@ dependencies {
   implementation(libs.hilt.android)
   ksp(libs.hilt.android.compiler)
   implementation(libs.androidx.hilt.navigation.compose)
+  androidTestImplementation(libs.hilt.android.testing)
+  kspAndroidTest(libs.hilt.android.compiler)
+
+  // Serialization (respuestas del diagnóstico, exportación de datos en Fase 3)
+  implementation(libs.kotlinx.serialization.json)
 
   // Local tests: Flow assertions
   testImplementation(libs.turbine)
