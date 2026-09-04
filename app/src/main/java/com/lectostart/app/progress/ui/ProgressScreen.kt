@@ -24,7 +24,7 @@ import java.time.format.DateTimeFormatter
 
 private val DATE_FORMATTER = DateTimeFormatter.ofPattern("d MMM, HH:mm")
 
-/** US-11 (docs/USER_STORIES.md). Pantalla "home" del flujo principal (ver docs/ARCHITECTURE.md §4). */
+/** US-11/US-12 (docs/USER_STORIES.md). Pantalla "home" del flujo principal (ver docs/ARCHITECTURE.md §4). */
 @Composable
 fun ProgressScreen(onStartNewReading: () -> Unit, modifier: Modifier = Modifier, viewModel: ProgressViewModel = hiltViewModel()) {
   val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -33,6 +33,9 @@ fun ProgressScreen(onStartNewReading: () -> Unit, modifier: Modifier = Modifier,
 
   Column(modifier = modifier.fillMaxSize().verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(16.dp)) {
     Text(text = "Mi progreso", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
+
+    val streakText = if (state.streakDays == 1) "🔥 Racha actual: 1 día" else "🔥 Racha actual: ${state.streakDays} días"
+    Text(text = streakText, style = MaterialTheme.typography.titleMedium)
 
     Button(onClick = onStartNewReading, modifier = Modifier.fillMaxWidth()) { Text("Nueva lectura") }
 

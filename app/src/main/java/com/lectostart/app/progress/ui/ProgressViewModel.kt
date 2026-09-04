@@ -4,9 +4,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lectostart.app.comprehension.data.ComprehensionRepository
 import com.lectostart.app.onboarding.data.UserRepository
+import com.lectostart.app.progress.data.StreakCalculator
 import com.lectostart.app.reading.data.ReadingRepository
 import com.lectostart.app.reading.data.SessionRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.time.Instant
+import java.time.ZoneId
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -24,7 +27,7 @@ data class SessionHistoryItem(
   val comprehensionPercent: Int,
 )
 
-data class ProgressUiState(val isLoading: Boolean = true, val sessions: List<SessionHistoryItem> = emptyList())
+data class ProgressUiState(val isLoading: Boolean = true, val sessions: List<SessionHistoryItem> = emptyList(), val streakDays: Int = 0)
 
 /** US-11 (docs/USER_STORIES.md). `SessionRepository.observeSessionsForUser` ya ordena por `startedAt DESC` (T-007). */
 @HiltViewModel
@@ -54,7 +57,10 @@ class ProgressViewModel @Inject constructor(
               comprehensionPercent = percent,
             )
           }
-        _uiState.update { it.copy(isLoading = false, sessions = items) }
+        val completedDates =
+          sessions.filter { it.completed }.map { Instant.ofEpochMilli(it.startedAt).atZone(ZoneId.systemDefault()).toLocalDate() }.toSet()
+        val streak = StreakCalculator.calculate(completedDates)
+        _uiState.update { it.copy(isLoading = false, sessions = items, streakDays = streak) }
       }
     }
   }
