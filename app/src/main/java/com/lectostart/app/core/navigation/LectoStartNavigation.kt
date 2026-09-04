@@ -76,7 +76,9 @@ private fun LectoStartNavHost(initialKey: NavKey, modifier: Modifier) {
             modifier = contentModifier,
           )
         }
-        entry<ReadingSession> { ReadingSessionScreen(onNext = { backStack.add(Questions) }, modifier = contentModifier) }
+        entry<ReadingSession> { key ->
+          ReadingSessionScreen(sessionId = key.sessionId, onNext = { backStack.add(Questions(key.sessionId)) }, modifier = contentModifier)
+        }
         entry<Questions> { QuestionsScreen(onNext = { backStack.add(SessionResult) }, modifier = contentModifier) }
         entry<SessionResult> { SessionResultScreen(onNext = { backStack.add(Progress) }, modifier = contentModifier) }
         entry<Progress> {
