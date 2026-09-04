@@ -186,6 +186,8 @@ Recorrer manualmente el flujo completo (`welcome` → `sessionResult`) en un dis
 
 ## Fase 2 — Progreso y Modo Rescate
 
+**T-021 completado (2026-09-04).** `ProgressScreen` (US-11) real: lista de sesiones pasadas (más reciente primero, ya venía ordenado por `SessionRepository` desde T-007) con lectura, fecha, tiempo leído y % de comprensión; estado vacío cuando no hay sesiones. Agregué un botón "Nueva lectura" que faltaba en la navegación — sin él, la app quedaba en un callejón sin salida tras la primera sesión (`MVP.md` describe "Volver a leer" como parte del flujo principal, pero ninguna pantalla lo implementaba todavía). **Bug real encontrado y corregido:** `Progress` es un `data object` (singleton); empujarlo dos veces al backstack (una vez al iniciar una lectura nueva "reseteando" el backstack, otra vez al volver de `SessionResult`) hacía que Navigation3 reutilizara el `ViewModelStore` de la primera entrada en vez de crear uno nuevo, mostrando en el historial la comprensión de la sesión anterior al momento de la creación (0%, antes de que la sesión existiera) en vez del valor real (100%) — verificado comparándolo contra el mismo dato ya correcto en `SessionResultScreen`. Se corrigió restructurando la navegación para que solo exista una entrada `Progress` viva a la vez (documentado con una nota en el código). Verificado en el emulador sin reiniciar la app (el escenario exacto donde ocurría el bug): historial coincide con el resultado real tras completar la sesión.
+
 ### T-021 — US-11: Historial de sesiones
 `ProgressScreen` (lista): sesiones pasadas ordenadas por fecha, estado vacío si no hay ninguna.
 

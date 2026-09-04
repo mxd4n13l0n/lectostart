@@ -32,6 +32,14 @@ import com.lectostart.app.rescue.ui.RescueModeScreen
 /**
  * NavHost central (docs/ARCHITECTURE.md §4). La ruta inicial depende de si ya existe un perfil
  * local: si sí, se salta todo el onboarding y se abre directo en "Mi progreso" (US-01).
+ *
+ * Nota importante (bug real encontrado en T-021): [Progress] es un `data object` (singleton).
+ * Si se empuja al backstack dos veces (p. ej. una vez al "resetear" para iniciar una lectura
+ * nueva, y otra vez al volver de SessionResult), Navigation3 reutiliza el `ViewModelStore` de la
+ * primera entrada en vez de crear uno nuevo — el historial queda con datos obsoletos (de antes de
+ * que la sesión existiera). Por eso solo se hace `backStack.clear(); backStack.add(Progress)` en
+ * un único lugar (al volver de SessionResult); todo lo demás navega hacia Progress sin volver a
+ * empujarlo.
  */
 @Composable
 fun LectoStartNavigation(modifier: Modifier = Modifier, viewModel: AppStartViewModel = hiltViewModel()) {
@@ -83,14 +91,20 @@ private fun LectoStartNavHost(initialKey: NavKey, modifier: Modifier) {
           QuestionsScreen(sessionId = key.sessionId, onNext = { backStack.add(SessionResult(key.sessionId)) }, modifier = contentModifier)
         }
         entry<SessionResult> { key ->
-          SessionResultScreen(sessionId = key.sessionId, onNext = { backStack.add(Progress) }, modifier = contentModifier)
+          SessionResultScreen(
+            sessionId = key.sessionId,
+            onNext = {
+              // Reset completo a un único Progress (ver nota abajo): evita que Progress quede
+              // duplicado en el backstack.
+              backStack.clear()
+              backStack.add(Progress)
+            },
+            modifier = contentModifier,
+          )
         }
         entry<Progress> {
           ProgressScreen(
-            onRestartFlow = {
-              backStack.clear()
-              backStack.add(Welcome)
-            },
+            onStartNewReading = { backStack.add(ReadingList) },
             modifier = contentModifier,
           )
         }

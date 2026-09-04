@@ -1,15 +1,63 @@
 package com.lectostart.app.progress.ui
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import com.lectostart.app.core.ui.PlaceholderScreen
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
-/**
- * Placeholder de Fase 0 (T-006). UI real: US-11/US-12 en docs/USER_STORIES.md. Es la pantalla
- * "home" del flujo; el botón "Reiniciar flujo" es solo para poder recorrer el esqueleto de
- * navegación repetidamente durante Fase 0 y se retira cuando esta pantalla sea real.
- */
+private val DATE_FORMATTER = DateTimeFormatter.ofPattern("d MMM, HH:mm")
+
+/** US-11 (docs/USER_STORIES.md). Pantalla "home" del flujo principal (ver docs/ARCHITECTURE.md §4). */
 @Composable
-fun ProgressScreen(onRestartFlow: () -> Unit, modifier: Modifier = Modifier) {
-  PlaceholderScreen(routeName = "Mi progreso", onNext = onRestartFlow, nextLabel = "Reiniciar flujo (debug)", modifier = modifier)
+fun ProgressScreen(onStartNewReading: () -> Unit, modifier: Modifier = Modifier, viewModel: ProgressViewModel = hiltViewModel()) {
+  val state by viewModel.uiState.collectAsStateWithLifecycle()
+
+  if (state.isLoading) return
+
+  Column(modifier = modifier.fillMaxSize().verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+    Text(text = "Mi progreso", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
+
+    Button(onClick = onStartNewReading, modifier = Modifier.fillMaxWidth()) { Text("Nueva lectura") }
+
+    if (state.sessions.isEmpty()) {
+      Text(
+        text = "Todavía no has completado ninguna sesión. ¡Empieza tu primera lectura!",
+        style = MaterialTheme.typography.bodyMedium,
+      )
+    } else {
+      state.sessions.forEach { session ->
+        Card(modifier = Modifier.fillMaxWidth()) {
+          Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            Text(text = session.readingTitle, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+            Text(text = formatDate(session.startedAt), style = MaterialTheme.typography.bodySmall)
+            Text(text = "Tiempo leído: ${session.timeReadSec / 60} min ${session.timeReadSec % 60} s", style = MaterialTheme.typography.bodyMedium)
+            Text(text = "Comprensión: ${session.comprehensionPercent}%", style = MaterialTheme.typography.bodyMedium)
+            if (!session.completed) {
+              Text(text = "Sesión no terminada", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.error)
+            }
+          }
+        }
+      }
+    }
+  }
 }
+
+private fun formatDate(epochMillis: Long): String =
+  DATE_FORMATTER.format(Instant.ofEpochMilli(epochMillis).atZone(ZoneId.systemDefault()))
