@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.take
 
 /** Determina si la app abre en onboarding o directo en "Mi progreso" (US-01, docs/ARCHITECTURE.md §4). */
 sealed interface AppStartDestination {
@@ -21,9 +22,16 @@ sealed interface AppStartDestination {
 
 @HiltViewModel
 class AppStartViewModel @Inject constructor(userRepository: UserRepository) : ViewModel() {
+  /**
+   * Se evalúa una sola vez, al arrancar (`take(1)`). Debe ser una decisión de "cold start", no
+   * reactiva: si se siguiera observando `observeUser()` durante toda la sesión, crear el perfil
+   * a mitad del onboarding (US-03, T-012) haría que la app saltara de golpe a "Mi progreso",
+   * abandonando el resto del flujo (diagnóstico, lectura, etc.) — bug real encontrado en T-012.
+   */
   val startDestination: StateFlow<AppStartDestination> =
     userRepository
       .observeUser()
+      .take(1)
       .map { user -> if (user != null) AppStartDestination.Home else AppStartDestination.Onboarding }
-      .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AppStartDestination.Loading)
+      .stateIn(viewModelScope, SharingStarted.Eagerly, AppStartDestination.Loading)
 }

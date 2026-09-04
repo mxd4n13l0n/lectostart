@@ -1,6 +1,7 @@
 package com.lectostart.app.core.navigation
 
 import app.cash.turbine.test
+import com.lectostart.app.core.MainDispatcherRule
 import com.lectostart.app.onboarding.data.ConsentEntity
 import com.lectostart.app.onboarding.data.UserEntity
 import com.lectostart.app.onboarding.data.UserRepository
@@ -8,16 +9,18 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
+import org.junit.Rule
 import org.junit.Test
 
 class AppStartViewModelTest {
+  @get:Rule val mainDispatcherRule = MainDispatcherRule()
+
   @Test
   fun startDestination_isOnboarding_whenNoUserExists() = runTest {
     val viewModel = AppStartViewModel(FakeUserRepository(userFlow = MutableStateFlow(null)))
 
     viewModel.startDestination.test {
-      assertEquals(AppStartDestination.Loading, awaitItem())
-      assertEquals(AppStartDestination.Onboarding, awaitItem())
+      assertEquals(AppStartDestination.Onboarding, awaitNonLoadingItem())
     }
   }
 
@@ -27,10 +30,16 @@ class AppStartViewModelTest {
     val viewModel = AppStartViewModel(FakeUserRepository(userFlow = MutableStateFlow(existingUser)))
 
     viewModel.startDestination.test {
-      assertEquals(AppStartDestination.Loading, awaitItem())
-      assertEquals(AppStartDestination.Home, awaitItem())
+      assertEquals(AppStartDestination.Home, awaitNonLoadingItem())
     }
   }
+}
+
+/** Ignora la emisión inicial `Loading` de `stateIn` si llega a aparecer (el orden exacto depende del dispatcher de test usado). */
+private suspend fun app.cash.turbine.ReceiveTurbine<AppStartDestination>.awaitNonLoadingItem(): AppStartDestination {
+  var item = awaitItem()
+  if (item == AppStartDestination.Loading) item = awaitItem()
+  return item
 }
 
 private class FakeUserRepository(private val userFlow: MutableStateFlow<UserEntity?>) : UserRepository {

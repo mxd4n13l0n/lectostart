@@ -1,0 +1,25 @@
+package com.lectostart.app.core
+
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.TestDispatcher
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.setMain
+import org.junit.rules.TestWatcher
+import org.junit.runner.Description
+
+/**
+ * Hace que `viewModelScope` (Dispatchers.Main) sea determinista en tests JVM. Necesaria en
+ * cualquier test de un ViewModel que use `viewModelScope.launch` (docs/ARCHITECTURE.md §11).
+ */
+@OptIn(ExperimentalCoroutinesApi::class)
+class MainDispatcherRule(private val dispatcher: TestDispatcher = UnconfinedTestDispatcher()) : TestWatcher() {
+  override fun starting(description: Description) {
+    Dispatchers.setMain(dispatcher)
+  }
+
+  override fun finished(description: Description) {
+    Dispatchers.resetMain()
+  }
+}

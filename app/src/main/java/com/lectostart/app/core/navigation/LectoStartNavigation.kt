@@ -54,7 +54,7 @@ private fun LectoStartNavHost(initialKey: NavKey, modifier: Modifier) {
       entryProvider {
         entry<Welcome> { WelcomeScreen(onNext = { backStack.add(Consent) }, modifier = contentModifier) }
         entry<Consent> { ConsentScreen(onAccepted = { userId -> backStack.add(CreateProfile(userId)) }, modifier = contentModifier) }
-        entry<CreateProfile> { CreateProfileScreen(onNext = { backStack.add(Diagnostic) }, modifier = contentModifier) }
+        entry<CreateProfile> { key -> CreateProfileScreen(userId = key.userId, onNext = { backStack.add(Diagnostic) }, modifier = contentModifier) }
         entry<Diagnostic> { DiagnosticScreen(onNext = { backStack.add(DiagnosticResult) }, modifier = contentModifier) }
         entry<DiagnosticResult> { DiagnosticResultScreen(onNext = { backStack.add(ReadingList) }, modifier = contentModifier) }
         entry<ReadingList> { ReadingListScreen(onNext = { backStack.add(DurationPicker) }, modifier = contentModifier) }
