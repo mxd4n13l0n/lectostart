@@ -11,7 +11,7 @@ private val GENERIC_PROMPTS =
   listOf(
     "¿De qué trata el fragmento de texto que leíste?",
     "¿Qué puedes rescatar como importante?",
-    "¿Podrías hacer un resumen de lo leído?",
+    "Elabora un resumen de lo leído",
     "Si le explicaras a alguien lo que comprendiste, ¿qué le dirías?",
     "Rescata 5 palabras o ideas clave que definan el texto.",
     "¿Cuáles fueron las palabras que no comprendiste?",

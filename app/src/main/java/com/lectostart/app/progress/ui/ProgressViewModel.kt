@@ -7,6 +7,8 @@ import com.lectostart.app.comprehension.data.ComprehensionRepository
 import com.lectostart.app.core.data.export.DataExporter
 import com.lectostart.app.onboarding.data.UserRepository
 import com.lectostart.app.progress.data.StreakCalculator
+import com.lectostart.app.progress.data.StreakMilestone
+import com.lectostart.app.progress.data.highestMilestoneReached
 import com.lectostart.app.reading.data.ReadingRepository
 import com.lectostart.app.reading.data.SessionRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -50,6 +52,10 @@ class ProgressViewModel @Inject constructor(
   private val _exportEvent = MutableSharedFlow<Uri>()
   val exportEvent: SharedFlow<Uri> = _exportEvent.asSharedFlow()
 
+  /** Evento de un solo disparo (brainstorming 2026-09-16, idea 3): festeja un hito de racha nuevo, una sola vez. */
+  private val _streakCelebration = MutableSharedFlow<StreakMilestone>()
+  val streakCelebration: SharedFlow<StreakMilestone> = _streakCelebration.asSharedFlow()
+
   fun onExportRequested() {
     viewModelScope.launch { _exportEvent.emit(dataExporter.exportToFile()) }
   }
@@ -57,6 +63,8 @@ class ProgressViewModel @Inject constructor(
   init {
     viewModelScope.launch {
       val user = userRepository.getUser() ?: return@launch
+      var lastCelebrated = user.lastCelebratedStreakMilestone
+
       sessionRepository.observeSessionsForUser(user.id).collectLatest { sessions ->
         val items =
           sessions.map { session ->
@@ -74,6 +82,14 @@ class ProgressViewModel @Inject constructor(
         val completedDates =
           sessions.filter { it.completed }.map { Instant.ofEpochMilli(it.startedAt).atZone(ZoneId.systemDefault()).toLocalDate() }.toSet()
         val streak = StreakCalculator.calculate(completedDates)
+
+        val milestone = highestMilestoneReached(streak)
+        if (milestone != null && milestone.days > lastCelebrated) {
+          lastCelebrated = milestone.days
+          userRepository.updateLastCelebratedStreakMilestone(user.id, milestone.days)
+          _streakCelebration.emit(milestone)
+        }
+
         _uiState.update { it.copy(isLoading = false, sessions = items, streakDays = streak) }
       }
     }

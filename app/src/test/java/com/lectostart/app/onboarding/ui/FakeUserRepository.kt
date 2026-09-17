@@ -26,4 +26,8 @@ class FakeUserRepository : UserRepository {
   override suspend fun recordConsent(userId: String, textVersion: String) {
     consentsRecorded[userId] = textVersion
   }
+
+  override suspend fun updateLastCelebratedStreakMilestone(userId: String, milestone: Int) {
+    createdUser = createdUser?.copy(lastCelebratedStreakMilestone = milestone)
+  }
 }

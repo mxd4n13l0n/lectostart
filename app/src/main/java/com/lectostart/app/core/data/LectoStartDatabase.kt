@@ -29,7 +29,7 @@ import com.lectostart.app.reading.data.SessionEntity
       SessionEntity::class,
       AnswerEntity::class,
     ],
-  version = 1,
+  version = 2,
   exportSchema = false,
 )
 abstract class LectoStartDatabase : RoomDatabase() {

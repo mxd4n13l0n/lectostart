@@ -22,6 +22,8 @@ interface UserRepository {
   suspend fun getConsent(userId: String): ConsentEntity?
 
   suspend fun recordConsent(userId: String, textVersion: String)
+
+  suspend fun updateLastCelebratedStreakMilestone(userId: String, milestone: Int)
 }
 
 class UserRepositoryImpl @Inject constructor(private val userDao: UserDao, private val consentDao: ConsentDao) : UserRepository {
@@ -41,4 +43,7 @@ class UserRepositoryImpl @Inject constructor(private val userDao: UserDao, priva
   override suspend fun recordConsent(userId: String, textVersion: String) {
     consentDao.insert(ConsentEntity(userId = userId, accepted = true, acceptedAt = System.currentTimeMillis(), textVersion = textVersion))
   }
+
+  override suspend fun updateLastCelebratedStreakMilestone(userId: String, milestone: Int) =
+    userDao.updateLastCelebratedStreakMilestone(userId, milestone)
 }

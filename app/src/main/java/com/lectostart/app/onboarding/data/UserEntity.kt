@@ -12,4 +12,5 @@ data class UserEntity(
   val semester: String,
   val mainGoal: String, // enum serializado como String
   val createdAt: Long,
+  val lastCelebratedStreakMilestone: Int = 0, // último hito de racha ya festejado (progress/data/StreakMilestones.kt)
 )

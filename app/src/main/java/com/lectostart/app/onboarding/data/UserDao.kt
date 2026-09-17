@@ -14,4 +14,7 @@ interface UserDao {
   @Query("SELECT * FROM UserEntity LIMIT 1") fun observeUser(): Flow<UserEntity?>
 
   @Query("SELECT * FROM UserEntity LIMIT 1") suspend fun getUser(): UserEntity?
+
+  @Query("UPDATE UserEntity SET lastCelebratedStreakMilestone = :milestone WHERE id = :userId")
+  suspend fun updateLastCelebratedStreakMilestone(userId: String, milestone: Int)
 }

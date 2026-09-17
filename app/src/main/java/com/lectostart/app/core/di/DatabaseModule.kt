@@ -25,7 +25,9 @@ object DatabaseModule {
   @Provides
   @Singleton
   fun provideLectoStartDatabase(@ApplicationContext context: Context): LectoStartDatabase =
-    Room.databaseBuilder(context, LectoStartDatabase::class.java, DATABASE_NAME).build()
+    // fallbackToDestructiveMigration: pre-piloto, sin usuarios reales todavía — no hay datos que
+    // valga la pena migrar entre versiones de esquema (docs/BACKLOG.md T-028/streak milestones).
+    Room.databaseBuilder(context, LectoStartDatabase::class.java, DATABASE_NAME).fallbackToDestructiveMigration(dropAllTables = true).build()
 
   @Provides fun provideUserDao(db: LectoStartDatabase): UserDao = db.userDao()
 

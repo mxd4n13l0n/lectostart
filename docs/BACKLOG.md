@@ -260,6 +260,20 @@ Verificado de punta a punta en el emulador (`medium_phone`): `pm clear` limpio �
 - **Depende de:** T-020
 - **DoD:** desde `ReadingList` se puede importar un `.txt`/`.md` del dispositivo y completar el flujo de lectura + preguntas + resultado con esa lectura, igual que con las lecturas sembradas.
 
+### T-029 completado (2026-09-17) — Hitos de racha (insignias + celebración)
+**Brainstorming del usuario** sobre qué agregar para dar más interés a la racha de US-12/T-022 sin construir un sistema de gamificación completo (eso sigue fuera del MVP). Se implementaron 3 de las 6 ideas discutidas — el resto queda pendiente de feedback externo antes de decidir si se agregan:
+
+1. **Insignias por hito** (`progress/data/StreakMilestones.kt`): 4 hitos fijos (3, 7, 14, 30 días), puramente derivados de `StreakCalculator.calculate` — no hay estado de "desbloqueado" propio, cualquier racha que alcance el umbral lo cumple. Se muestran como una fila de chips en `ProgressScreen`, coloreados si ya se alcanzaron.
+2. **Emoji escalado en el número de racha**: `streakEmoji()` cambia de 📖 (sin racha) a 🔥/⚡/🌟/🏆 según el hito más alto alcanzado.
+3. **Celebración única por hito**: para no repetir el mensaje cada vez que se visita "Mi progreso", se agregó `UserEntity.lastCelebratedStreakMilestone` (bump de versión de Room a 2, `fallbackToDestructiveMigration` — pre-piloto, sin usuarios reales que migrar). `ProgressViewModel` compara el hito más alto alcanzado contra el último festejado y, si es nuevo, persiste el nuevo valor y emite un evento de un solo disparo que `ProgressScreen` muestra como Snackbar (mismo patrón que el evento de exportación de T-025).
+
+Ideas evaluadas y **no implementadas todavía** (pendientes de feedback): contador acumulado de sesiones/minutos (en vez de solo racha consecutiva), aviso de "racha en riesgo" al final del día, y streak freeze/día de gracia estilo Duolingo. Nota de diseño: para el público de este estudio (personas con ansiedad/procrastinación frente a tareas), una racha que se "rompe" puede sentirse como fracaso — el contador acumulado o el día de gracia probablemente encajan mejor que presionar más la racha consecutiva; vale la pena confirmarlo con el piloto.
+
+Verificado de punta a punta en el emulador: se insertaron sesiones completadas en 2 días previos directamente en `lectostart.db` (vía `sqlite3`, pull/push del archivo) para simular una racha en curso, y se completó una sesión real el día siguiente desde la UI. Capturas confirmaron insignia "3 días" resaltada, emoji 🔥, racha "4 días" y el Snackbar "🔥 ¡3 días seguidos! Ya vas agarrando el ritmo." disparándose una sola vez. 16/16 tests instrumentados y unitarios pasan (se actualizaron los `FakeUserRepository` de test para el nuevo método de `UserRepository`).
+
+- **Depende de:** T-022
+- **DoD:** al alcanzar 3, 7, 14 o 30 días de racha, la insignia correspondiente se ve desbloqueada en "Mi progreso" y aparece un mensaje de celebración una única vez.
+
 ---
 
 ## Fase 4 — Post-MVP (no priorizado aún)
@@ -277,6 +291,7 @@ OCR/foto, subida de PDF, generación automática de preguntas por IA, gamificaci
 | Fin de Fase 2 | T-021 a T-023 | MVP completo, listo para piloto con participantes |
 | Fin de Fase 3 | T-024 a T-027 | Datos exportables + ajustes post-piloto |
 | T-028 (adelanto de Fase 4) | T-028 | Import de lectura propia (TXT/MD) + preguntas genéricas para cualquier lectura |
+| T-029 (adelanto parcial de gamificación) | T-029 | Insignias por hito de racha + celebración única, sin sistema de puntos |
 
 ---
 

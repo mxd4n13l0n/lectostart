@@ -153,7 +153,7 @@ Como **participante**, quiero ver cuántos días consecutivos he usado la app, p
 **Criterios de aceptación:**
 - Dado que completé sesiones en días consecutivos, cuando entro a "Mi progreso", entonces veo un contador de "racha actual" en días.
 - Dado que dejé pasar un día sin completar ninguna sesión, cuando vuelvo a abrir la app, entonces la racha se reinicia a 0 (o a 1 si completo una sesión ese mismo día).
-- Insignias múltiples y sistema de puntos quedan fuera del MVP (ver `MVP.md` §3).
+- Insignias múltiples y sistema de puntos quedan fuera del MVP (ver `MVP.md` §3). **Excepción adelantada (T-029, 2026-09-17):** sí se agregaron insignias simples por hito de racha (3/7/14/30 días) y un mensaje de celebración al alcanzar cada una, a pedido explícito del usuario — no es un sistema de puntos ni de insignias variadas, solo estos 4 hitos fijos derivados de la racha existente.
 
 ---
 

@@ -56,4 +56,6 @@ private class FakeUserRepository(private val userFlow: MutableStateFlow<UserEnti
   override suspend fun getConsent(userId: String): ConsentEntity? = null
 
   override suspend fun recordConsent(userId: String, textVersion: String) = Unit
+
+  override suspend fun updateLastCelebratedStreakMilestone(userId: String, milestone: Int) = Unit
 }
