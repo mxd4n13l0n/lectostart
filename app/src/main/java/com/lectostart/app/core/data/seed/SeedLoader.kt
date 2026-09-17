@@ -1,9 +1,9 @@
 package com.lectostart.app.core.data.seed
 
 import android.content.Context
-import com.lectostart.app.reading.data.QuestionEntity
 import com.lectostart.app.reading.data.ReadingEntity
 import com.lectostart.app.reading.data.ReadingRepository
+import com.lectostart.app.reading.data.genericQuestionsFor
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import kotlinx.coroutines.flow.first
@@ -27,11 +27,7 @@ class SeedLoader @Inject constructor(@ApplicationContext private val context: Co
         ReadingEntity(id = seed.id, title = seed.title, text = seed.text, source = seed.source, createdAt = baseTime + index)
       }
     )
-    readingRepository.insertQuestions(
-      seedReadings.flatMap { seed ->
-        seed.questions.map { QuestionEntity(id = it.id, readingId = seed.id, prompt = it.prompt, type = it.type, expectedAnswer = it.expectedAnswer) }
-      }
-    )
+    readingRepository.insertQuestions(seedReadings.flatMap { genericQuestionsFor(it.id) })
   }
 
   private fun parseSeedAssets(): List<SeedReading> {

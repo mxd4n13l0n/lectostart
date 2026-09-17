@@ -248,11 +248,23 @@ Modo oscuro y/o tamaño de letra ajustable en `ReadingSessionScreen` (marcadas c
 - **Depende de:** T-017
 - **DoD:** ambas opciones funcionan si se implementan; ninguna es requisito para considerar el MVP completo.
 
+### T-028 completado (2026-09-16) — Importar lectura propia (TXT/MD)
+**Adelanto deliberado de Fase 4**, antes de correr el piloto (decisión de producto explícita del usuario, no una excepción de proceso). FAB en `ReadingListScreen` que abre el selector de documentos del sistema (Storage Access Framework, `ActivityResultContracts.OpenDocument`) y admite `.txt`/`.md`. `ReadingImporter` (`reading/data`) valida la extensión, lee el archivo como texto plano vía `ContentResolver`, y crea una `ReadingEntity` nueva con el nombre de archivo como título.
+
+Esto reabrió una decisión de arquitectura más profunda: `QuestionsScreen` es un paso obligatorio de la navegación y antes solo funcionaba si la lectura tenía preguntas cargadas a mano (T-009/T-018) — una lectura importada se habría quedado sin poder completarse nunca (`allAnswered` exige `questions.isNotEmpty()`). Se resolvió reemplazando **todas** las preguntas de comprensión, sembradas e importadas, por 6 preguntas genéricas y abiertas (autoevaluadas, igual que las preguntas sin `expectedAnswer` ya soportaban) — ver `reading/data/GenericQuestions.kt`. `SeedLoader` y `seed_readings.json` ya no cargan preguntas por lectura.
+
+PDF queda explícitamente fuera de esta iteración (requeriría una librería de extracción de texto, ya que `PdfRenderer` de Android solo rasteriza páginas). RSS/links a artículos web se evaluó y se descartó por ahora: la app no tiene ninguna dependencia de red hoy, y la extracción de contenido ("Readability") de HTML arbitrario no tiene una librería madura en Android — se consideró una pieza bastante más grande y frágil que el import local.
+
+Verificado de punta a punta en el emulador (`medium_phone`): `pm clear` limpio → onboarding completo → `ReadingList` → FAB → selector de archivos del sistema → `.md` de prueba en Descargas → aparece "Importado desde tu dispositivo" en la lista → sesión de lectura con el texto real del archivo → las 6 preguntas genéricas → `SessionResult` con "Preguntas correctas: 6/6", sin cuelgues. `SeedLoaderTest` actualizado (6 preguntas genéricas por lectura sembrada en vez de las 4 anteriores tipadas); 16/16 tests instrumentados y unitarios pasan.
+
+- **Depende de:** T-020
+- **DoD:** desde `ReadingList` se puede importar un `.txt`/`.md` del dispositivo y completar el flujo de lectura + preguntas + resultado con esa lectura, igual que con las lecturas sembradas.
+
 ---
 
 ## Fase 4 — Post-MVP (no priorizado aún)
 
-OCR/foto, subida de PDF, generación automática de preguntas por IA, gamificación avanzada, funciones sociales, sincronización/backend remoto, notificaciones inteligentes, multi-idioma, UI de administración de lecturas. Ver `PRD.md` §7.2 y `MVP.md` §4. No se crean tickets hasta validar el flujo principal con el piloto.
+OCR/foto, subida de PDF, generación automática de preguntas por IA, gamificación avanzada, funciones sociales, sincronización/backend remoto, notificaciones inteligentes, multi-idioma, UI de administración de lecturas. Ver `PRD.md` §7.2 y `MVP.md` §4. No se crean tickets hasta validar el flujo principal con el piloto — **excepto T-028** (import de lectura propia TXT/MD), adelantado por decisión explícita del usuario el 2026-09-16.
 
 ---
 
@@ -264,6 +276,7 @@ OCR/foto, subida de PDF, generación automática de preguntas por IA, gamificaci
 | Fin de Fase 1 | T-007 a T-020 | **Flujo principal completo y funcional** — el valor central de LectoStart |
 | Fin de Fase 2 | T-021 a T-023 | MVP completo, listo para piloto con participantes |
 | Fin de Fase 3 | T-024 a T-027 | Datos exportables + ajustes post-piloto |
+| T-028 (adelanto de Fase 4) | T-028 | Import de lectura propia (TXT/MD) + preguntas genéricas para cualquier lectura |
 
 ---
 

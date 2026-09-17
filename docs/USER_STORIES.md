@@ -72,7 +72,7 @@ Como **participante**, quiero ver una lista de lecturas disponibles cargadas por
 **Criterios de aceptación:**
 - Dado que termino el diagnóstico (o vuelvo a la pantalla principal en una sesión posterior), cuando llego a "Agregar lectura" / "Elegir lectura", entonces veo una lista de lecturas fijas empaquetadas en la app, cada una con título y, si existe, autor/fuente.
 - Dado que toco una lectura de la lista, cuando la selecciono, entonces avanzo a "Elegir duración de sesión" (US-06) con esa lectura asociada.
-- Para el MVP no existe opción de pegar texto propio en la UI principal (queda documentada como extensión futura en `MVP.md`, no se implementa en Fase 1).
+- Para el MVP no existe opción de pegar texto propio en la UI principal. Sí existe (T-028, adelanto de Fase 4) un FAB en esta misma pantalla para importar una lectura propia desde un archivo `.txt`/`.md` del dispositivo — ver `docs/BACKLOG.md`.
 
 **Nota técnica para el Investigador:** en el MVP, las lecturas y sus preguntas (US-05b) se cargan como datos empaquetados en la app (seed data), no mediante una UI de administración. Una UI de administración es candidata post-MVP.
 
@@ -118,7 +118,7 @@ Como **participante**, quiero ver el texto con un temporizador y una barra de pr
 Como **participante**, quiero responder preguntas sobre lo que leí inmediatamente después de la sesión, para que se evalúe mi comprensión mientras el contenido está fresco.
 
 **Criterios de aceptación:**
-- Dado que terminé una sesión de lectura, cuando llego a "¿Cuánto comprendiste?", entonces veo entre 3 y 5 preguntas asociadas a la lectura (`PreguntaComprension`), con una mezcla de tipos literal/inferencial/crítica.
+- Dado que terminé una sesión de lectura, cuando llego a "¿Cuánto comprendiste?", entonces veo preguntas de comprensión asociadas a la lectura (`PreguntaComprension`). **Actualizado en T-028 (2026-09-16):** son 6 preguntas genéricas y abiertas (autoevaluadas), iguales para cualquier lectura sembrada o importada — ya no hay mezcla literal/inferencial/crítica por lectura; ver `reading/data/GenericQuestions.kt` y `docs/BACKLOG.md`.
 - Dado que respondo todas las preguntas, cuando toco "Enviar respuestas", entonces cada respuesta se guarda como `RespuestaSesion` vinculada a `sesion_id` y `pregunta_id`, con su evaluación de corrección (`correcta` o score, según el criterio definido por pregunta).
 - Dado que intento enviar con preguntas sin responder, cuando toco "Enviar respuestas", entonces la app me indica qué preguntas faltan y no avanza.
 - Al enviar respuestas válidas, avanzo a Resultado de sesión (US-10).

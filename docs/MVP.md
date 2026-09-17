@@ -57,6 +57,8 @@ Estudiante no quiere empezar / se bloquea
 
 OCR/foto, PDF, generación de preguntas por IA, gamificación avanzada, funciones sociales, sync multi-dispositivo, notificaciones inteligentes, multi-idioma.
 
+**Excepción adelantada (2026-09-16, T-028, docs/BACKLOG.md):** importar una lectura propia desde un archivo `.txt`/`.md` del dispositivo sí se implementó, por decisión explícita del usuario antes del piloto. PDF sigue fuera de alcance (requiere una librería de extracción de texto); RSS/links a artículos web se evaluó y se descartó por ahora (sin dependencias de red en el proyecto, y sin una librería madura de extracción de contenido tipo "Readability" en Android).
+
 ## 5. Modelo de datos (borrador funcional, no técnico todavía)
 
 ```

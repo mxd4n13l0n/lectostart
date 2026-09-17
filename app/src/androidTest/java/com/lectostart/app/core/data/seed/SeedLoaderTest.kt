@@ -37,10 +37,9 @@ class SeedLoaderTest {
     assertTrue(readings.any { it.id == "reading-02" })
 
     val questions = readingRepository.getQuestions("reading-01")
-    assertEquals(4, questions.size)
-    assertTrue(questions.any { it.type == "literal" })
-    assertTrue(questions.any { it.type == "inferencial" })
-    assertTrue(questions.any { it.type == "critica" })
+    assertEquals(6, questions.size)
+    assertTrue(questions.all { it.type == "generica" })
+    assertTrue(questions.all { it.expectedAnswer == null })
   }
 
   @Test
